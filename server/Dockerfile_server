@@ -1,0 +1,31 @@
+FROM python:3.9.19
+
+WORKDIR /usr/src/app
+
+# install redis
+RUN apt-get update || true
+RUN apt-get install libglib2.0-0 -y && apt install libgl1-mesa-glx -y && apt-get install gcc -y || true
+RUN apt-get install vim -y && apt-get install supervisor -y && apt install redis -y  
+# RUN apt install wkhtmltopdf -y
+RUN sed -i '69s/.*/bind 127.0.0.1/' /etc/redis/redis.conf
+
+# install python package
+RUN pip install -i https://mirrors.aliyun.com/pypi/simple redis
+RUN pip install -i https://mirrors.aliyun.com/pypi/simple uvicorn
+RUN pip install -i https://mirrors.aliyun.com/pypi/simple fastapi 
+RUN pip install -i https://mirrors.aliyun.com/pypi/simple JoUtil 
+RUN pip install -i https://mirrors.aliyun.com/pypi/simple python-multipart 
+RUN pip install -i https://mirrors.aliyun.com/pypi/simple gradio 
+
+# copy file to image
+COPY ./*  /usr/src/app/
+
+# log dir 
+RUN mkdir -p /usr/src/app/logs
+
+CMD ["./start_server.sh"]
+
+
+
+
+
